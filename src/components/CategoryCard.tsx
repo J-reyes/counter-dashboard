@@ -2,15 +2,17 @@ import type { Category } from '../types'
 
 interface CategoryCardProps {
     category: Category
+    onSelectCategory: (id: string) => void
 }
 
-export default function CategoryCard({ category }: CategoryCardProps) {
+export default function CategoryCard({ category, onSelectCategory }: CategoryCardProps) {
+
     return (
         <div>
             <span>{category.name}</span>
             <span>Created At: {category.createdAt}</span>
             <span>Counters: 0</span>
-            <button>Open</button>
+            <button onClick={() => onSelectCategory(category.id)}>Open</button>
             <button>Delete</button>
         </div>
     )

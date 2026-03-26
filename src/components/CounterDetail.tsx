@@ -1,10 +1,15 @@
 import SimpleCounterControls from './SimpleCounterControls'
 import SegmentedCounterControls from './SegmentedCounterControls'
 
-export default function CounterDetail() {
+interface CounterDetailProps {
+    onBack: () => void
+}
+
+export default function CounterDetail({ onBack }: CounterDetailProps) {
+
     return (
         <div>
-            <button>Back</button>
+            <button onClick={onBack}>Back</button>
             <h2>Counter Name: Pushups</h2>
             <p>Created: Mar 16, 2026</p>
             <SimpleCounterControls />
