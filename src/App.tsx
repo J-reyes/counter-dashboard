@@ -6,15 +6,21 @@ import CategoryList from "./components/CategoryList";
 import CategoryDetail from "./components/CategoryDetail";
 import CounterDetail from "./components/CounterDetail";
 
-import type { Category } from "./types";
+import type { Category, Counter } from "./types";
 
 function App() {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [counters, setCounters] = useState<Counter[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedCounter, setSelectedCounter] = useState<string | null>(null);
 
-  function handleAddCategory(category: Category) {
-    setCategories((prev) => [category, ...prev]);
+  function handleAddCounter(newCounter: Counter) {
+    setCounters((prev) => [newCounter, ...prev]);
+  }
+
+
+  function handleAddCategory(newCategory: Category) {
+    setCategories((prev) => [newCategory, ...prev]);
   }
 
   function handleSelectCategory(id: string) {
@@ -48,7 +54,7 @@ function App() {
           />
         </>
       ) : selectedCounter === null ? (
-        <CategoryDetail onBack={handleBackToCategories} onSelectCounter={handleSelectCounter} />
+        <CategoryDetail onBack={handleBackToCategories} onSelectCounter={handleSelectCounter} onAddCounter={handleAddCounter} selectedCategoryId={selectedCategory}/>
       ) : (
         <CounterDetail onBack={handleBackToCategory}/>
       )}

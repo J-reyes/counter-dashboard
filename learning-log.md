@@ -29,6 +29,38 @@ Each `Counter` stores a `categoryId` (a reference), not a full `Category` object
 
 ---
 
+## Step 5: Add a Category (Controlled Inputs + Callbacks)
+
+**Concept:** Local state for form inputs, callback props for communicating up.
+
+The `AddCategoryForm` owns its own `name` state because no other component needs to know what the user is currently typing — only the final submitted value matters to `App`. When the form submits, it builds a complete `Category` object and passes it up via `onAddCategory`. `App` appends it to the `categories` array immutably using the functional `prev =>` form of `setCategories`.
+
+**Key rule:** Keep UI-only state local. Lift only what other components actually need.
+
+```ts
+onAddCategory: (category: Category) => void  // Props type — receives a complete object, not raw fields
+```
+
+---
+
+## Step 6: View Navigation (State-Driven Routing)
+
+**Concept:** Three views controlled by two pieces of state, no router needed.
+
+`selectedCategoryId` and `selectedCounterId` in `App` determine which view renders. The combination of their values maps to exactly one view:
+
+| `selectedCategoryId` | `selectedCounterId` | View |
+|---|---|---|
+| `null` | `null` | Category List |
+| set | `null` | Category Detail |
+| set | set | Counter Detail |
+
+Going back to the category list clears both. Going back to category detail clears only `selectedCounterId` — `selectedCategoryId` must stay set so the right category detail renders.
+
+Callbacks flow down through props: `App` defines all handlers, passes them to view components, which wire them to buttons.
+
+---
+
 ## Steps 3–4: Component Breakdown and UI Skeleton
 
 **Concept:** Build a static version before adding interactivity.
