@@ -9,8 +9,8 @@ export default function CategoryCard({ category, onSelectCategory }: CategoryCar
 
     return (
         <div>
-            <span>{category.name}</span>
-            <span>Created At: {category.createdAt}</span>
+            <span><p>{category.name}</p></span>
+            <span> Created At: {category.createdAt} </span>
             <span>Counters: 0</span>
             <button onClick={() => onSelectCategory(category.id)}>Open</button>
             <button>Delete</button>

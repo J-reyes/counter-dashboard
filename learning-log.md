@@ -61,6 +61,30 @@ Callbacks flow down through props: `App` defines all handlers, passes them to vi
 
 ---
 
+## Step 7: Add a Counter (Discriminated Union Builds + Prop Drilling)
+
+**Concept:** Building a discriminated union explicitly — no spreads, no casts.
+
+When creating a new counter, the shape depends on `form.mode`. You must build each branch fully and explicitly so TypeScript can verify the correct fields are present:
+
+```ts
+const newCounter: Counter = form.mode === "simple"
+  ? { id: ..., mode: "simple", count: 0, ... }   // TypeScript knows count exists here
+  : { id: ..., mode: "segmented", segments: [], ... }  // TypeScript knows segments exists here
+```
+
+Using `{ ...form, mode: "simple", count: 0 }` looks shorter but TypeScript can't verify the full shape — it sees an ambiguous `mode` from the spread. The explicit ternary is the safe pattern for discriminated unions.
+
+**Prop drilling chain for `onSelectCounter`:**
+```
+App → CategoryDetail → CounterList → CounterSummaryCard → Open button
+```
+Each component in the chain receives the callback as a prop and passes it down. When a callback needs to travel through multiple components, map the full chain before writing any of it.
+
+**Deriving data instead of storing it:** The category name shown in `CategoryDetail` is looked up in `App` during render (`categories.find(...)`) and passed down as a plain string — not stored in state. This keeps `App` as the single source of truth.
+
+---
+
 ## Steps 3–4: Component Breakdown and UI Skeleton
 
 **Concept:** Build a static version before adding interactivity.

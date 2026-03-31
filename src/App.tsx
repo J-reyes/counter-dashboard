@@ -14,10 +14,12 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedCounter, setSelectedCounter] = useState<string | null>(null);
 
+  // derive counter
+  const selectedCounterData = counters.find(c => c.id === selectedCounter);
+
   function handleAddCounter(newCounter: Counter) {
     setCounters((prev) => [newCounter, ...prev]);
   }
-
 
   function handleAddCategory(newCategory: Category) {
     setCategories((prev) => [newCategory, ...prev]);
@@ -41,6 +43,8 @@ function App() {
     setSelectedCounter(null);
   }
 
+  const selectedCategoryName = categories.find(c => c.id === selectedCategory)?.name ?? "";
+
   return (
     <div>
       <h1>Counter Dashboard</h1>
@@ -54,9 +58,16 @@ function App() {
           />
         </>
       ) : selectedCounter === null ? (
-        <CategoryDetail onBack={handleBackToCategories} onSelectCounter={handleSelectCounter} onAddCounter={handleAddCounter} selectedCategoryId={selectedCategory}/>
+        <CategoryDetail
+          onBack={handleBackToCategories}
+          onSelectCounter={handleSelectCounter}
+          onAddCounter={handleAddCounter}
+          counters={counters}
+          selectedCategoryId={selectedCategory}
+          categoryName={selectedCategoryName}
+        />
       ) : (
-        <CounterDetail onBack={handleBackToCategory}/>
+        <CounterDetail onBack={handleBackToCategory}  counter={selectedCounterData}/>
       )}
     </div>
   );

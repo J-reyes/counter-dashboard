@@ -1,13 +1,27 @@
-export default function CounterSummaryCard() {
-    return (
-        <div>
-            <h2>Counter Summary Card</h2>
-            <span>Counter Label: Pushups</span>
-            <span>Created At: 2026-03-21</span>
-            <span>Mode: Simple</span>
-            <span>Total: 100</span>
-            <button>Open</button>
-            <button>Delete</button>
-        </div>
-    )
+import type { Counter } from "../types";
+
+interface CounterSummaryCardProps {
+  counter: Counter;
+  onSelectCounter: (id: string) => void;
+}
+
+export default function CounterSummaryCard({
+  counter,
+  onSelectCounter,
+}: CounterSummaryCardProps) {
+  return (
+    <div>
+      <span>Counter Label: {counter.label}</span>
+      <span>Created At: {counter.createdAt}</span>
+      <span>Mode: {counter.mode}</span>
+      <span>
+        Total:{" "}
+        {counter.mode === "simple"
+          ? counter.count
+          : counter.segments.reduce((acc, segment) => acc + segment.count, 0)}
+      </span>
+      <button onClick={() => onSelectCounter(counter.id)}>Open</button>
+      <button>Delete</button>
+    </div>
+  );
 }
