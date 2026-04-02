@@ -14,8 +14,10 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedCounter, setSelectedCounter] = useState<string | null>(null);
 
-  // derive counter
-  const selectedCounterData = counters.find(c => c.id === selectedCounter);
+  const selectedCounterData = counters.find((c) => c.id === selectedCounter) ?? null;
+
+  const selectedCategoryName =
+    categories.find((c) => c.id === selectedCategory)?.name ?? "";
 
   function handleAddCounter(newCounter: Counter) {
     setCounters((prev) => [newCounter, ...prev]);
@@ -43,7 +45,94 @@ function App() {
     setSelectedCounter(null);
   }
 
-  const selectedCategoryName = categories.find(c => c.id === selectedCategory)?.name ?? "";
+  function handleIncrement(counterId: string) {
+    setCounters((prev) =>
+      prev.map((c) =>
+        c.id === counterId && c.mode === "simple"
+          ? {
+              ...c,
+              count: c.count + 1,
+            }
+          : c,
+      ),
+    );
+  }
+
+  function handleDecrement(counterId: string) {
+    setCounters((prev) =>
+      prev.map((c) =>
+        c.id === counterId && c.mode === "simple" && c.count > 0
+          ? {
+              ...c,
+              count: c.count - 1,
+            }
+          : c,
+      ),
+    );
+  }
+
+  function handleAddSegment(counterId: string) {
+    setCounters((prev) =>
+      prev.map((c) =>
+        c.id === counterId && c.mode === "segmented"
+          ? {
+              ...c,
+              segments: [...c.segments, { id: crypto.randomUUID(), count: 0 }],
+            }
+          : c,
+      ),
+    );
+  }
+
+  function handleIncrementSegment(counterId: string, segmentId: string) {
+    setCounters((prev) =>
+      prev.map((c) =>
+        c.id === counterId && c.mode === "segmented"
+          ? {
+              ...c,
+              segments: c.segments.map((s) =>
+                s.id === segmentId
+                  ? {
+                      ...s,
+                      count: s.count + 1,
+                    }
+                  : s,
+              ),
+            }
+          : c,
+      ),
+    );
+  }
+
+  function handleDecrementSegment(counterId: string, segmentId: string) {
+    setCounters((prev) =>
+      prev.map((c) =>
+        c.id === counterId && c.mode === "segmented"
+          ? {
+              ...c,
+              segments: c.segments.map((s) =>
+                s.id === segmentId && s.count > 0
+                  ? {
+                      ...s,
+                      count: s.count - 1,
+                    }
+                  : s,
+              ),
+            }
+          : c,
+      ),
+    );
+  }
+
+  function handleDeleteSegment(counterId: string, segmentId: string) {
+    setCounters((prev) =>
+      prev.map((c) =>
+        c.id === counterId && c.mode === "segmented"
+          ? { ...c, segments: c.segments.filter((s) => s.id !== segmentId) }
+          : c,
+      ),
+    );
+  }
 
   return (
     <div>
@@ -67,7 +156,16 @@ function App() {
           categoryName={selectedCategoryName}
         />
       ) : (
-        <CounterDetail onBack={handleBackToCategory}  counter={selectedCounterData}/>
+        <CounterDetail
+          onBack={handleBackToCategory}
+          counter={selectedCounterData}
+          onIncrement={handleIncrement}
+          onDecrement={handleDecrement}
+          onAddSegment={handleAddSegment}
+          onIncrementSegment={handleIncrementSegment}
+          onDecrementSegment={handleDecrementSegment}
+          onDeleteSegment={handleDeleteSegment}
+        />
       )}
     </div>
   );

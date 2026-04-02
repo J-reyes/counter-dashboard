@@ -12,7 +12,6 @@ export default function AddCounterForm({
 }: AddCounterFormProps) {
   const [form, setForm] = useState({
     label: "",
-    step: 1,
     mode: "simple" as "simple" | "segmented",
   });
 
@@ -28,7 +27,6 @@ export default function AddCounterForm({
         ? {
             id: crypto.randomUUID(),
             label: form.label,
-            step: form.step,
             mode: "simple",
             count: 0,
             createdAt: new Date().toISOString(),
@@ -37,14 +35,13 @@ export default function AddCounterForm({
         : {
             id: crypto.randomUUID(),
             label: form.label,
-            step: form.step,
             mode: "segmented",
             segments: [],
             createdAt: new Date().toISOString(),
             categoryId: selectedCategoryId,
           };
     onAddCounter(newCounter);
-    setForm({ label: "", step: 1, mode: "simple" as "simple" | "segmented" });
+    setForm({ label: "", mode: "simple" as "simple" | "segmented" });
   }
 
   return (
@@ -56,12 +53,6 @@ export default function AddCounterForm({
           placeholder="Counter Name"
           value={form.label}
           onChange={(e) => handleAddCounterChange("label", e.target.value)}
-        />
-        <input
-          type="number"
-          placeholder="Step"
-          value={form.step}
-          onChange={(e) => handleAddCounterChange("step", e.target.value)}
         />
         <select
           value={form.mode}

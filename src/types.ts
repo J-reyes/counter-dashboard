@@ -12,7 +12,6 @@ export type Category = {
 type BaseCounter = {
   readonly id: string;
   label: string;
-  step: number;
   readonly createdAt: string;
   readonly categoryId: string;
 };

@@ -85,6 +85,27 @@ Each component in the chain receives the callback as a prop and passes it down. 
 
 ---
 
+## Steps 9–12: Counter Controls and Segment Management
+
+**Concept:** Nested immutable updates — two levels of `map` for segmented counters.
+
+To update a segment inside a counter, you need two nested maps:
+1. Outer `map` finds the right counter by `counterId` and mode check
+2. Inner `map` finds the right segment by `segmentId` and returns a new object with updated count
+
+To delete a segment, the inner operation switches from `map` to `filter` — same outer map, but `filter` removes the matching segment instead of updating it.
+
+**Pre-binding callbacks in `SegmentedCounterControls`** keeps `SegmentRow` simple — it only needs `onIncrement: () => void` with no ids. The parent binds `counter.id` and `segment.id` at render time:
+```tsx
+onIncrement={() => onIncrementSegment(counter.id, segment.id)}
+```
+
+**The `step` field was removed** — all counters now increment/decrement by 1. `step` added complexity without matching the actual use case: count up to your target, then "lock in" a set by adding a new segment.
+
+**String vs number input bug:** `<input type="number">` always returns a string value. When stored in state without conversion, `count + step` does string concatenation (`"011"`) not addition. Fix: explicitly convert the field to a number when updating state.
+
+---
+
 ## Steps 3–4: Component Breakdown and UI Skeleton
 
 **Concept:** Build a static version before adding interactivity.
@@ -94,3 +115,52 @@ The hierarchy has three distinct views controlled by two pieces of state in `App
 **Why so many components?** Each component does one thing. Splitting lists from cards means changing how a card looks never touches the list logic, and vice versa.
 
 **Key insight:** `App` IS the dashboard — the app title is just a `<h1>` in `App`, not a separate component. A dedicated `Dashboard` component would have been redundant since `App` already owns the layout and view switching.
+
+---
+
+## Bug Fix: SegmentRow Display
+
+**Concept:** JSX adjacent inline elements have no automatic spacing — and element order is UI logic.
+
+Two bugs lived in a single component (`SegmentRow`), both caused by the same layout decision.
+
+**Bug 1 — "starts at 10":**
+```tsx
+// Before (broken)
+<span>Set {index + 1}</span>
+<span>{segment.count}</span>
+```
+Adjacent `<span>` elements in JSX render touching. "Set 1" + "0" = "Set 10". The count was always 0 — the display was lying.
+
+**Bug 2 — "increment/decrement appear swapped":**
+With both buttons placed *after* the count and no value between them, the layout broke the mental model established by `SimpleCounterControls` (`[-][count][+]`). "Decrement -" appeared first, making it feel reversed.
+
+**Fix — one layout change solved both:**
+```tsx
+// After (fixed)
+<span>Set {index + 1}</span>
+<button onClick={onDecrementSegment}>Decrement -</button>
+<span>{segment.count}</span>
+<button onClick={onIncrementSegment}>Increment +</button>
+```
+Moving `{segment.count}` between the buttons separates it from the label AND restores the expected `[-][count][+]` order. The state logic was never wrong — only the layout was.
+
+---
+
+## Feature: Decrement Floor (no negatives)
+
+**Concept:** Guard a state update with a condition rather than clamping after the fact.
+
+The cleanest way to prevent a count from going below zero is to extend the condition that already decides whether to update — not to compute the new value and then clamp it.
+
+```tsx
+// Instead of: count: Math.max(0, c.count - 1)
+// Do this:
+c.id === counterId && c.mode === "simple" && c.count > 0
+  ? { ...c, count: c.count - 1 }
+  : c
+```
+
+The `c.count > 0` check is added directly to the condition. When count is already 0, the whole branch is skipped and `c` is returned unchanged — no unnecessary re-render, no clamping math. The rule reads like plain English: *only decrement if there's room to go down*.
+
+The same guard was added to the inner segment condition in `handleDecrementSegment`: `s.count > 0`.
