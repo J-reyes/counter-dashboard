@@ -3,11 +3,13 @@ import type { Counter } from "../types";
 interface CounterSummaryCardProps {
   counter: Counter;
   onSelectCounter: (id: string) => void;
+  onDeleteCounter: (id: string) => void;
 }
 
 export default function CounterSummaryCard({
   counter,
   onSelectCounter,
+  onDeleteCounter,
 }: CounterSummaryCardProps) {
   return (
     <div>
@@ -21,7 +23,7 @@ export default function CounterSummaryCard({
           : counter.segments.reduce((acc, segment) => acc + segment.count, 0)}
       </span>
       <button onClick={() => onSelectCounter(counter.id)}>Open</button>
-      <button>Delete</button>
+      <button onClick={() => onDeleteCounter(counter.id)}>Delete</button>
     </div>
   );
 }

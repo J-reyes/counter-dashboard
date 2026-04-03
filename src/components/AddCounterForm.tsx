@@ -61,7 +61,7 @@ export default function AddCounterForm({
           <option value="simple">Simple</option>
           <option value="segmented">Segmented</option>
         </select>
-        <button type="submit">Add Counter</button>
+        <button type="submit" disabled={form.label.trim() === ""}>Add Counter</button>
       </form>
     </div>
   );

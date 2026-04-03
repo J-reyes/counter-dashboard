@@ -22,9 +22,18 @@ function App() {
   function handleAddCounter(newCounter: Counter) {
     setCounters((prev) => [newCounter, ...prev]);
   }
+  
+  function handleDeleteCounter(id: string) {
+    setCounters((prev) => prev.filter((c) => c.id !== id));
+  }
 
   function handleAddCategory(newCategory: Category) {
     setCategories((prev) => [newCategory, ...prev]);
+  }
+
+  function handleDeleteCategory(id: string) {
+    setCategories((prev) => prev.filter((c) => c.id !== id));
+    setCounters((prev) => prev.filter((c) => c.categoryId !== id));
   }
 
   function handleSelectCategory(id: string) {
@@ -142,8 +151,10 @@ function App() {
         <>
           <AddCategoryForm onAddCategory={handleAddCategory} />
           <CategoryList
+            counters={counters}
             categories={categories}
             onSelectCategory={handleSelectCategory}
+            onDeleteCategory={handleDeleteCategory}
           />
         </>
       ) : selectedCounter === null ? (
@@ -151,6 +162,7 @@ function App() {
           onBack={handleBackToCategories}
           onSelectCounter={handleSelectCounter}
           onAddCounter={handleAddCounter}
+          onDeleteCounter={handleDeleteCounter}
           counters={counters}
           selectedCategoryId={selectedCategory}
           categoryName={selectedCategoryName}

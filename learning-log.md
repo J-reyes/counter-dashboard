@@ -164,3 +164,68 @@ c.id === counterId && c.mode === "simple" && c.count > 0
 The `c.count > 0` check is added directly to the condition. When count is already 0, the whole branch is skipped and `c` is returned unchanged — no unnecessary re-render, no clamping math. The rule reads like plain English: *only decrement if there's room to go down*.
 
 The same guard was added to the inner segment condition in `handleDecrementSegment`: `s.count > 0`.
+
+---
+
+## Step 12: Delete a Counter
+
+**Concept:** Prop drilling a callback — tracing the full path a handler travels from `App` down to the button.
+
+The Delete button lives in `CounterSummaryCard`, but `setCounters` lives in `App`. The id has to travel up through callbacks:
+
+```
+App (handleDeleteCounter) → CategoryDetail → CounterList → CounterSummaryCard (onClick)
+```
+
+The handler itself is one line — `filter` out the matching id:
+```ts
+setCounters((prev) => prev.filter((c) => c.id !== id));
+```
+
+**Key lesson:** Always trace the full component chain when adding a new prop. Every component between the source of the event and the owner of state needs the prop added to its interface, destructuring, and JSX. Missing a middle link (like `CounterList`) is a common source of TypeScript errors — the compiler will tell you the prop is missing, but it helps to map the chain before you start writing.
+
+---
+
+## Step 13: Delete a Category (and its counters)
+
+**Concept:** A single handler can make multiple state updates — both run before the next render.
+
+Deleting a category requires two `filter` calls in one function:
+```ts
+function handleDeleteCategory(id: string) {
+  setCategories((prev) => prev.filter((c) => c.id !== id));
+  setCounters((prev) => prev.filter((c) => c.categoryId !== id));
+}
+```
+
+The key insight: `categoryId` on a counter is the link back to its category. Filtering counters where `categoryId !== id` removes all the orphans in one pass.
+
+React batches these two `setState` calls — they trigger a single re-render, not two. The state is always consistent: by the time the UI updates, both the category and its counters are already gone.
+
+---
+
+## Step 14: Edge Cases and UX Polish
+
+**Concept:** Small bricks — each one targets a single gap between "works" and "feels solid."
+
+### Disabled buttons
+The `disabled` prop on a `<button>` takes a boolean. When `true`, the button is greyed out and unclickable. The condition mirrors the existing guard inside the submit handler:
+```tsx
+<button type="submit" disabled={name.trim() === ""}>Add Category</button>
+```
+The guard stays as a defensive fallback; `disabled` is the user-facing layer.
+
+### Empty state for segmented counter
+Same ternary pattern used in `CounterList` and `CategoryList`:
+```tsx
+counter.segments.length > 0 ? counter.segments.map(...) : <p>No sets yet.</p>
+```
+The condition must come *before* the `.map()` call — `.map() : (...)` alone is not a valid ternary.
+
+### Derived counter count on CategoryCard
+`CategoryCard` receives the full `counters` array and filters by `categoryId` to get its own count:
+```tsx
+const categoryCounters = counters.filter((c) => c.categoryId === category.id);
+// → categoryCounters.length
+```
+The count is derived at render time — not stored in state. Any time `counters` changes (add, delete), the count updates automatically because it's computed fresh each render.

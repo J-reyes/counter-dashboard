@@ -4,15 +4,16 @@ import type { Counter } from '../types'
 interface CounterListProps {
     counters: Counter[],
     onSelectCounter: (id: string) => void
+    onDeleteCounter: (id: string) => void
 }
 
-export default function CounterList({ counters, onSelectCounter }: CounterListProps) {
+export default function CounterList({ counters, onSelectCounter, onDeleteCounter }: CounterListProps) {
     return (
         <div>
             <h2>Counter List</h2>
             {
                 counters.length > 0 ? counters.map(counter => (
-                    <CounterSummaryCard key={counter.id} counter={counter} onSelectCounter={onSelectCounter} />
+                    <CounterSummaryCard key={counter.id} counter={counter} onSelectCounter={onSelectCounter} onDeleteCounter={onDeleteCounter} />
                 )) : (
                     <p>No counters yet</p>
                 )

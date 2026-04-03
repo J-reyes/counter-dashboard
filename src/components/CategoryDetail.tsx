@@ -6,6 +6,7 @@ interface CategoryDetailProps {
   onBack: () => void;
   onSelectCounter: (id: string) => void;
   onAddCounter: (counter: Counter) => void;
+  onDeleteCounter: (id: string) => void;
   selectedCategoryId: string;
   counters: Counter[];
   categoryName: string;
@@ -15,6 +16,7 @@ export default function CategoryDetail({
   onBack,
   onSelectCounter,
   onAddCounter,
+  onDeleteCounter,
   selectedCategoryId,
   counters,
   categoryName,
@@ -30,6 +32,7 @@ export default function CategoryDetail({
       <CounterList
         counters={counters.filter((c) => c.categoryId === selectedCategoryId)}
         onSelectCounter={onSelectCounter}
+        onDeleteCounter={onDeleteCounter}
       />
     </div>
   );

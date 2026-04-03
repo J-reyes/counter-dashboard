@@ -19,7 +19,7 @@ export default function SegmentedCounterControls({
     <div>
       <button onClick={() => onAddSegment(counter.id)}>Add new set</button>
       {
-        counter.segments.map((segment, index) => (
+        counter.segments.length > 0 ? counter.segments.map((segment, index) => (
           <SegmentRow
             key={segment.id}
             segment={segment}
@@ -28,8 +28,9 @@ export default function SegmentedCounterControls({
             onDecrementSegment={() => onDecrementSegment(counter.id, segment.id)}
             onDeleteSegment={() => onDeleteSegment(counter.id, segment.id)}
           />
-        ))
-      }
-    </div>
-  );
-}
+        )) : (
+          <p>No sets yet. Add a set above.</p>
+        )}
+      </div>
+    );
+  }

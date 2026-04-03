@@ -19,7 +19,7 @@ export default function AddCategoryForm({ onAddCategory }: AddCategoryFormProps)
             <h2>Add Category</h2>
             <form onSubmit={handleAddCategory}>
                 <input type="text" placeholder="Category Name" value={name} onChange={(e) => setName(e.target.value)} />
-                <button type="submit">Add Category</button>
+                <button type="submit" disabled={name.trim() === ""}>Add Category</button>
             </form>
         </div>
     )
