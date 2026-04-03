@@ -1,16 +1,17 @@
 import type { SimpleCounter } from "../types";
 
 interface SimpleCounterControlsProps {
-    counter: SimpleCounter;
-    onIncrement: (counterId: string) => void;
-    onDecrement: (counterId: string) => void;
+  counter: SimpleCounter;
+  onIncrement: (counterId: string) => void;
+  onDecrement: (counterId: string) => void;
 }
+
 export default function SimpleCounterControls({ counter, onIncrement, onDecrement }: SimpleCounterControlsProps) {
-    return (
-        <div>
-            <button onClick={() => onDecrement(counter.id)}>Decrement -</button>
-            <span>{counter.count}</span>
-            <button onClick={() => onIncrement(counter.id)}>Increment +</button>
-        </div>
-    )
+  return (
+    <div className="counter-controls">
+      <button className="btn btn-control" onClick={() => onDecrement(counter.id)}>−</button>
+      <span className="count-display">{counter.count}</span>
+      <button className="btn btn-control" onClick={() => onIncrement(counter.id)}>+</button>
+    </div>
+  );
 }

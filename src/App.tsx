@@ -144,11 +144,11 @@ function App() {
   }
 
   return (
-    <div>
-      <h1>Counter Dashboard</h1>
+    <div className="app">
+      <h1 className="app-title">Counter Dashboard</h1>
 
       {selectedCategory === null ? (
-        <>
+        <div className="view">
           <AddCategoryForm onAddCategory={handleAddCategory} />
           <CategoryList
             counters={counters}
@@ -156,7 +156,7 @@ function App() {
             onSelectCategory={handleSelectCategory}
             onDeleteCategory={handleDeleteCategory}
           />
-        </>
+        </div>
       ) : selectedCounter === null ? (
         <CategoryDetail
           onBack={handleBackToCategories}

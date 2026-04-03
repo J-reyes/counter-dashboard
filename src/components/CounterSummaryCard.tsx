@@ -6,24 +6,23 @@ interface CounterSummaryCardProps {
   onDeleteCounter: (id: string) => void;
 }
 
-export default function CounterSummaryCard({
-  counter,
-  onSelectCounter,
-  onDeleteCounter,
-}: CounterSummaryCardProps) {
+export default function CounterSummaryCard({ counter, onSelectCounter, onDeleteCounter }: CounterSummaryCardProps) {
+  const total =
+    counter.mode === "simple"
+      ? counter.count
+      : counter.segments.reduce((acc, s) => acc + s.count, 0);
+
   return (
-    <div>
-      <span>Counter Label: {counter.label}</span>
-      <span>Created At: {counter.createdAt}</span>
-      <span>Mode: {counter.mode}</span>
-      <span>
-        Total:{" "}
-        {counter.mode === "simple"
-          ? counter.count
-          : counter.segments.reduce((acc, segment) => acc + segment.count, 0)}
-      </span>
-      <button onClick={() => onSelectCounter(counter.id)}>Open</button>
-      <button onClick={() => onDeleteCounter(counter.id)}>Delete</button>
+    <div className="card">
+      <p className="card-name">{counter.label}</p>
+      <p className="card-meta">
+        {counter.mode === "simple" ? "Simple" : "Segmented"} · Total: {total}
+      </p>
+      <p className="card-meta">Created: {new Date(counter.createdAt).toLocaleDateString()}</p>
+      <div className="card-actions">
+        <button className="btn btn-secondary" onClick={() => onSelectCounter(counter.id)}>Open</button>
+        <button className="btn btn-danger" onClick={() => onDeleteCounter(counter.id)}>Delete</button>
+      </div>
     </div>
   );
 }

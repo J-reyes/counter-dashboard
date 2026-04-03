@@ -8,6 +8,7 @@ interface SegmentedCounterControlsProps {
   onDecrementSegment: (counterId: string, segmentId: string) => void;
   onDeleteSegment: (counterId: string, segmentId: string) => void;
 }
+
 export default function SegmentedCounterControls({
   counter,
   onAddSegment,
@@ -16,21 +17,28 @@ export default function SegmentedCounterControls({
   onDeleteSegment,
 }: SegmentedCounterControlsProps) {
   return (
-    <div>
-      <button onClick={() => onAddSegment(counter.id)}>Add new set</button>
-      {
-        counter.segments.length > 0 ? counter.segments.map((segment, index) => (
-          <SegmentRow
-            key={segment.id}
-            segment={segment}
-            index={index}
-            onIncrementSegment={() => onIncrementSegment(counter.id, segment.id)}
-            onDecrementSegment={() => onDecrementSegment(counter.id, segment.id)}
-            onDeleteSegment={() => onDeleteSegment(counter.id, segment.id)}
-          />
-        )) : (
-          <p>No sets yet. Add a set above.</p>
+    <div className="segmented-controls">
+      <div className="segmented-header">
+        <button className="btn btn-primary" onClick={() => onAddSegment(counter.id)}>
+          + Add Set
+        </button>
+      </div>
+      <div className="segments-list">
+        {counter.segments.length > 0 ? (
+          counter.segments.map((segment, index) => (
+            <SegmentRow
+              key={segment.id}
+              segment={segment}
+              index={index}
+              onIncrementSegment={() => onIncrementSegment(counter.id, segment.id)}
+              onDecrementSegment={() => onDecrementSegment(counter.id, segment.id)}
+              onDeleteSegment={() => onDeleteSegment(counter.id, segment.id)}
+            />
+          ))
+        ) : (
+          <p className="empty-state">No sets yet — add one above.</p>
         )}
       </div>
-    );
-  }
+    </div>
+  );
+}

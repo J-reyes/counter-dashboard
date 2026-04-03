@@ -6,20 +6,17 @@ interface AddCounterFormProps {
   selectedCategoryId: string;
 }
 
-export default function AddCounterForm({
-  onAddCounter,
-  selectedCategoryId,
-}: AddCounterFormProps) {
+export default function AddCounterForm({ onAddCounter, selectedCategoryId }: AddCounterFormProps) {
   const [form, setForm] = useState({
     label: "",
     mode: "simple" as "simple" | "segmented",
   });
 
-  function handleAddCounterChange(inputName: string, newValue: string) {
+  function handleChange(inputName: string, newValue: string) {
     setForm((prev) => ({ ...prev, [inputName]: newValue }));
   }
 
-  function handleAddCounter(e: React.SubmitEvent<HTMLFormElement>) {
+  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (form.label.trim() === "") return;
     const newCounter: Counter =
@@ -41,27 +38,41 @@ export default function AddCounterForm({
             categoryId: selectedCategoryId,
           };
     onAddCounter(newCounter);
-    setForm({ label: "", mode: "simple" as "simple" | "segmented" });
+    setForm({ label: "", mode: "simple" });
   }
 
   return (
-    <div>
-      <h2>Add Counter</h2>
-      <form onSubmit={handleAddCounter}>
-        <input
-          type="text"
-          placeholder="Counter Name"
-          value={form.label}
-          onChange={(e) => handleAddCounterChange("label", e.target.value)}
-        />
-        <select
-          value={form.mode}
-          onChange={(e) => handleAddCounterChange("mode", e.target.value)}
+    <div className="form-section">
+      <p className="form-section-title">Add Counter</p>
+      <form onSubmit={handleSubmit} className="form-row">
+        <div className="form-group">
+          <label className="form-label">Name</label>
+          <input
+            className="input"
+            type="text"
+            placeholder="Counter name"
+            value={form.label}
+            onChange={(e) => handleChange("label", e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label className="form-label">Mode</label>
+          <select
+            className="select"
+            value={form.mode}
+            onChange={(e) => handleChange("mode", e.target.value)}
+          >
+            <option value="simple">Simple</option>
+            <option value="segmented">Segmented</option>
+          </select>
+        </div>
+        <button
+          className="btn btn-primary"
+          type="submit"
+          disabled={form.label.trim() === ""}
         >
-          <option value="simple">Simple</option>
-          <option value="segmented">Segmented</option>
-        </select>
-        <button type="submit" disabled={form.label.trim() === ""}>Add Counter</button>
+          Add
+        </button>
       </form>
     </div>
   );

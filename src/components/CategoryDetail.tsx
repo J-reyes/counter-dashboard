@@ -22,9 +22,11 @@ export default function CategoryDetail({
   categoryName,
 }: CategoryDetailProps) {
   return (
-    <div>
-      <button onClick={onBack}>Back</button>
-      <h2>Category Name: {categoryName}</h2>
+    <div className="view">
+      <div className="view-header">
+        <button className="btn btn-back" onClick={onBack}>←</button>
+        <h2 className="view-title">{categoryName}</h2>
+      </div>
       <AddCounterForm
         onAddCounter={onAddCounter}
         selectedCategoryId={selectedCategoryId}

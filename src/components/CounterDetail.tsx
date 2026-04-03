@@ -23,15 +23,17 @@ export default function CounterDetail({
   onDecrementSegment,
   onDeleteSegment,
 }: CounterDetailProps) {
-
   if (!counter) return null;
 
   return (
-    <div>
-      <h2>Counter Detail</h2>
-      <button onClick={onBack}>Back</button>
-      <h2>{counter.label}</h2>
-      <p>Created: {counter.createdAt}</p>
+    <div className="view">
+      <div className="view-header">
+        <button className="btn btn-back" onClick={onBack}>←</button>
+        <h2 className="view-title">{counter.label}</h2>
+      </div>
+      <p className="card-meta">
+        {counter.mode === "simple" ? "Simple" : "Segmented"} · Created: {new Date(counter.createdAt).toLocaleDateString()}
+      </p>
       {counter.mode === "simple" ? (
         <SimpleCounterControls
           counter={counter}
