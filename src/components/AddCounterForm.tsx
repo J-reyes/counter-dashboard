@@ -27,6 +27,7 @@ export default function AddCounterForm({ onAddCounter, selectedCategoryId }: Add
             mode: "simple",
             count: 0,
             createdAt: new Date().toISOString(),
+            lastModified: new Date().toISOString(),
             categoryId: selectedCategoryId,
           }
         : {
@@ -35,6 +36,7 @@ export default function AddCounterForm({ onAddCounter, selectedCategoryId }: Add
             mode: "segmented",
             segments: [],
             createdAt: new Date().toISOString(),
+            lastModified: new Date().toISOString(),
             categoryId: selectedCategoryId,
           };
     onAddCounter(newCounter);

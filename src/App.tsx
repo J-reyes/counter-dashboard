@@ -14,7 +14,8 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedCounter, setSelectedCounter] = useState<string | null>(null);
 
-  const selectedCounterData = counters.find((c) => c.id === selectedCounter) ?? null;
+  const selectedCounterData =
+    counters.find((c) => c.id === selectedCounter) ?? null;
 
   const selectedCategoryName =
     categories.find((c) => c.id === selectedCategory)?.name ?? "";
@@ -22,7 +23,7 @@ function App() {
   function handleAddCounter(newCounter: Counter) {
     setCounters((prev) => [newCounter, ...prev]);
   }
-  
+
   function handleDeleteCounter(id: string) {
     setCounters((prev) => prev.filter((c) => c.id !== id));
   }
@@ -61,6 +62,7 @@ function App() {
           ? {
               ...c,
               count: c.count + 1,
+              lastModified: new Date().toISOString(),
             }
           : c,
       ),
@@ -74,6 +76,7 @@ function App() {
           ? {
               ...c,
               count: c.count - 1,
+              lastModified: new Date().toISOString(),
             }
           : c,
       ),
@@ -87,6 +90,7 @@ function App() {
           ? {
               ...c,
               segments: [...c.segments, { id: crypto.randomUUID(), count: 0 }],
+              lastModified: new Date().toISOString(),
             }
           : c,
       ),
@@ -107,6 +111,7 @@ function App() {
                     }
                   : s,
               ),
+              lastModified: new Date().toISOString(),
             }
           : c,
       ),
@@ -127,6 +132,7 @@ function App() {
                     }
                   : s,
               ),
+              lastModified: new Date().toISOString(),
             }
           : c,
       ),
@@ -137,7 +143,11 @@ function App() {
     setCounters((prev) =>
       prev.map((c) =>
         c.id === counterId && c.mode === "segmented"
-          ? { ...c, segments: c.segments.filter((s) => s.id !== segmentId) }
+          ? {
+              ...c,
+              segments: c.segments.filter((s) => s.id !== segmentId),
+              lastModified: new Date().toISOString(),
+            }
           : c,
       ),
     );

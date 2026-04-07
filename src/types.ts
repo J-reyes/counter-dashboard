@@ -13,6 +13,7 @@ type BaseCounter = {
   readonly id: string;
   label: string;
   readonly createdAt: string;
+  lastModified: string;
   readonly categoryId: string;
 };
 

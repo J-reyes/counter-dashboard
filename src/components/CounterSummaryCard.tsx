@@ -19,6 +19,7 @@ export default function CounterSummaryCard({ counter, onSelectCounter, onDeleteC
         {counter.mode === "simple" ? "Simple" : "Segmented"} · Total: {total}
       </p>
       <p className="card-meta">Created: {new Date(counter.createdAt).toLocaleDateString()}</p>
+      <p className="card-meta">Last modified: {new Date(counter.lastModified).toLocaleDateString()}</p>
       <div className="card-actions">
         <button className="btn btn-secondary" onClick={() => onSelectCounter(counter.id)}>Open</button>
         <button className="btn btn-danger" onClick={() => onDeleteCounter(counter.id)}>Delete</button>

@@ -229,3 +229,20 @@ const categoryCounters = counters.filter((c) => c.categoryId === category.id);
 // → categoryCounters.length
 ```
 The count is derived at render time — not stored in state. Any time `counters` changes (add, delete), the count updates automatically because it's computed fresh each render.
+
+---
+
+## Feature: Last Modified Timestamp
+
+**Concept:** Adding a mutable field to a type and updating it across all relevant handlers.
+
+`lastModified: string` was added to `BaseCounter` (not `readonly`) so both `SimpleCounter` and `SegmentedCounter` inherit it automatically. It starts equal to `createdAt` and diverges the moment any mutation occurs.
+
+The update pattern is the same in all six handlers — add it to the counter-level spread:
+```ts
+? { ...c, count: c.count + 1, lastModified: new Date().toISOString() }
+```
+
+For segment handlers, `lastModified` goes on the outer counter object (`...c`), not the inner segment spread — because it's the *counter* that was modified, not the segment type itself.
+
+**Key lesson:** When adding a new field to a shared base type, TypeScript immediately flags every place that constructs that type — both creation (`AddCounterForm`) and every handler that returns a new object. The compiler acts as a checklist, guiding you through every location that needs updating.

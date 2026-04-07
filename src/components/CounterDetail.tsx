@@ -28,11 +28,17 @@ export default function CounterDetail({
   return (
     <div className="view">
       <div className="view-header">
-        <button className="btn btn-back" onClick={onBack}>←</button>
+        <button className="btn btn-back" onClick={onBack}>
+          ←
+        </button>
         <h2 className="view-title">{counter.label}</h2>
       </div>
       <p className="card-meta">
-        {counter.mode === "simple" ? "Simple" : "Segmented"} · Created: {new Date(counter.createdAt).toLocaleDateString()}
+        {counter.mode === "simple" ? "Simple" : "Segmented"} · Created:{" "}
+        {new Date(counter.createdAt).toLocaleDateString()}
+      </p>
+      <p className="card-meta">
+        Last modified: {new Date(counter.lastModified).toLocaleDateString()}
       </p>
       {counter.mode === "simple" ? (
         <SimpleCounterControls
